@@ -39,3 +39,19 @@ exports.createTodo = async (req, res) => {
     );
   }
 };
+
+exports.GetTodos = async (req, res) => {
+  try {
+    const list = await User.findById(req.userId)
+      .select("-password -email")
+      .populate("todos")
+      .exec();
+    return res.json(
+      returnjson(StatusCode.SUCCESS, "All Todo is Fetched", list)
+    );
+  } catch (error) {
+    return res.json(
+      returnjson(StatusCode.UNPROCESSABLE_ENTITY, "Something Went Wrong", error)
+    );
+  }
+};

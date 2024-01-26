@@ -6,7 +6,7 @@ const { Login } = require("../controller/Login");
 const { Registration } = require("../controller/Registration");
 const { registrationSchema } = require("../validatorSchema/registrationSchema");
 const { loginSchema } = require("../validatorSchema/loginSchema");
-const { createTodo } = require("../controller/Todo");
+const { createTodo, GetTodos } = require("../controller/Todo");
 const { AuthMiddleware } = require("../middlewares/Auth");
 
 route.post("/registration", registrationSchema, Registration);
@@ -18,5 +18,6 @@ route.post(
   [body("desc", "Todo Description is Required").exists()],
   createTodo
 );
+route.get("/getalltodo", AuthMiddleware, GetTodos);
 
 module.exports = route;
