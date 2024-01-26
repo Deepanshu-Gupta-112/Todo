@@ -83,13 +83,61 @@ exports.MarkTodo = async (req, res) => {
         },
       ]
     );
-
+    if (!todo) {
+      return res.json(
+        returnjson(StatusCode.UNPROCESSABLE_ENTITY, "Todo not found ")
+      );
+    }
     return res.json(
       returnjson(StatusCode.SUCCESS, "SucessFully Updayed", todo)
     );
   } catch (error) {
     res.json(
       returnjson(StatusCode.UNPROCESSABLE_ENTITY, "Something Went Wrong", error)
+    );
+  }
+};
+
+exports.DeleteTodo = async (req, res) => {
+  const error = validationResult(req);
+
+  if (!error.isEmpty()) {
+    return res.json(
+      returnjson(
+        StatusCode.VALIDATION_ERROR,
+        "Todo Id is required",
+        error.mapped()
+      )
+    );
+  }
+
+  try {
+    const todoId = req.body.todo_id;
+
+    const todo = await Todo.findOneAndDelete({
+      _id: todoId,
+      userId: req.userId,
+    });
+
+    if (!todo) {
+      return res.json(
+        returnjson(
+          StatusCode.UNPROCESSABLE_ENTITY,
+          "Todo not found or not authorized to delete"
+        )
+      );
+    }
+
+    return res.json(
+      returnjson(StatusCode.SUCCESS, "Successfully deleted todo", todo)
+    );
+  } catch (error) {
+    return res.json(
+      returnjson(
+        StatusCode.UNPROCESSABLE_ENTITY,
+        "Something went wrong while deleting the todo",
+        error
+      )
     );
   }
 };
