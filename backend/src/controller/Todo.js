@@ -55,3 +55,41 @@ exports.GetTodos = async (req, res) => {
     );
   }
 };
+
+exports.MarkTodo = async (req, res) => {
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return res.json(
+      returnjson(
+        StatusCode.VALIDATION_ERROR,
+        "Todo Id is requried",
+        error.mapped()
+      )
+    );
+  }
+  try {
+    const todo = await Todo.findOneAndUpdate(
+      {
+        _id: req.body.todo_id,
+        userId: req.userId,
+      },
+      [
+        {
+          $set: {
+            isCompleted: {
+              $eq: [false, "$isCompleted"],
+            },
+          },
+        },
+      ]
+    );
+
+    return res.json(
+      returnjson(StatusCode.SUCCESS, "SucessFully Updayed", todo)
+    );
+  } catch (error) {
+    res.json(
+      returnjson(StatusCode.UNPROCESSABLE_ENTITY, "Something Went Wrong", error)
+    );
+  }
+};
