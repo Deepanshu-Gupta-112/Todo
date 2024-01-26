@@ -1,4 +1,4 @@
-const { body, validationResult } = require("express-validator");
+const { body } = require("express-validator");
 
 exports.registrationSchema = [
   body("name").trim().isAlpha().withMessage("Name Should be Aplhabets only"),

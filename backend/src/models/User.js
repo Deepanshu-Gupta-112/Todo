@@ -29,6 +29,12 @@ const UserSchema = mongoose.Schema({
     unique: true,
     required: true,
   },
+  todos: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Todo",
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,
